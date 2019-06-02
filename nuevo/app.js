@@ -39,27 +39,37 @@ app.post('/login', (req, res) => { 
     /*
     HACE FALTA LA OCNSULTA AL SERVIDOR
     */
+    let check = new Promise(function(resolve, reject) {
 
-    if ((!(username === 'oscar' && password === '1234'))) {   
-        res.status(401).send({     
-            error: 'usuario o contraseña inválidos'   
-        }) 
-        return  
-    } 
-    var tokenData = {   
-        username: username    // Los datos de el usuario
-             
-    }
-    var token = jwt.sign(tokenData, 'SECRET', {    
-        expiresIn: 60 * 60 * .1 // expires in 24 hours
-             
-    }) 
-    res.send({   
-        token 
+        pool.query('SELECT * FROM usuario WHERE username = ? and passw= ?', [req.body.user, req.body.password], function(err, rows, fields) {
+            //Call reject on error states,
+            //call resolve with results
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+        });
+    });
+    check.then(row => {
+
+        if (row.length > 0) {  
+            var tokenData = {   
+                username: row[0]['username'] // Los datos de el usuario        
+            }
+            var token = jwt.sign(tokenData, 'SECRET', {    
+                expiresIn: 60 * 60 * .1 // expires in 24 hours
+            }) 
+            res.status(200).send({   
+                token 
+            })
+        } else {
+            res.status(401).send({     
+                error: 'usuario o contraseña inválidos'   
+            }) 
+            return 
+        }   
     })
 })
-
-
 
 // error handler
 app.use(function(err, req, res, next) {
