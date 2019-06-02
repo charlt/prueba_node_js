@@ -1,0 +1,19 @@
+{
+  "name": "examen",
+  "version": "1.0.0",
+  "description": "Examen para arcsa",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/charlt/prueba_node_js.git"
+  },
+  "author": "Ing Charly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/charlt/prueba_node_js/issues"
+  },
+  "homepage": "https://github.com/charlt/prueba_node_js#readme"
+}
