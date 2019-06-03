@@ -9,9 +9,7 @@ var usersRouter = require('./routes/users');
 var bodyParser = require("body-parser");
 const pool = require('./database/db');
 var app = express();
-var router = express.Router();
 var passport = require("passport");
-var passportJWT = require("passport-jwt");
 var fileUpload = require('express-fileupload')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -28,11 +26,6 @@ app.use(fileUpload())
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
-
-
-
-
-
 //Autenticación de login
 app.post('/login', (req, res) => { 
     var username = req.body.user 
@@ -48,7 +41,6 @@ app.post('/login', (req, res) => { 
         });
     });
     check.then(row => {
-
         if (row.length > 0) {  
             var tokenData = {   
                 username: row[0]['username'],
