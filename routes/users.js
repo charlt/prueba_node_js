@@ -3,6 +3,7 @@ const router = express.Router();
 const pool = require('../database/db');
 const jwt = require('jsonwebtoken');
 const fs = require('fs-extra');
+var bcrypt = require('bcrypt');
 
 /**
  * @description Función que crea un numero n de letras aleatorias
@@ -342,35 +343,36 @@ router.post('/add', function(req, res, next) {
                 }
 
 
+                let insert_query = ""
 
-                if (rol == "admin") {
 
-                    insert = new Promise(function(resolve, reject) {
-                        pool.query(`INSERT INTO usuario  VALUES (NULL, '${nombre}', '${edad}', '${username}', '${nombre_avatar}', '${email}', '${passw}', 'admin')`, function(err, rows, fields) {
-                            // reject para errores
-                            // resolve se hizo bien la transaccion con resultados
-                            if (err) {
-                                return reject(err);
-                            }
-                            resolve(rows);
+                let BCRYPT_SALT_ROUNDS = 12;
+                bcrypt.hash(passw, BCRYPT_SALT_ROUNDS)
+                    .then(function(hashedPassword) {
+                        console.log(hashedPassword)
+                        passw = hashedPassword;
+                        if (rol == "admin") {
+                            insert_query = `INSERT INTO usuario  VALUES (NULL, '${nombre}', '${edad}', '${username}', '${nombre_avatar}', '${email}', '${passw}', 'admin')`;
+                        } else {
+                            insert_query = `INSERT INTO usuario VALUES (NULL, '${nombre}', '${edad}', '${username}', '${nombre_avatar}', '${email}', '${passw}', 'normal')`;
+
+                        }
+                        insert = new Promise(function(resolve, reject) {
+                            pool.query(insert_query, function(err, rows, fields) {
+                                // reject para errores
+                                // resolve se hizo bien la transaccion con resultados
+                                if (err) {
+                                    return reject(err);
+                                }
+                                resolve(rows);
+                            });
                         });
-                    });
-                } else {
-                    insert = new Promise(function(resolve, reject) {
-                        pool.query(`INSERT INTO usuario VALUES (NULL, '${nombre}', '${edad}', '${username}', '${nombre_avatar}', '${email}', '${passw}', 'normal')`, function(err, rows, fields) {
-                            // reject para errores
-                            // resolve se hizo bien la transaccion con resultados
-                            if (err) {
-                                return reject(err);
-                            }
-                            resolve(rows);
-                        });
-                    });
-                }
-                insert.then(user => {
-                    res.status(200).send({ "ok": "El usuario se registro correctamente" })
+                        insert.then(user => {
+                            res.status(200).send({ "ok": "El usuario se registro correctamente" })
 
-                })
+                        })
+                    })
+
             } else {
                 res.status(200).send({ "error": "Registre la información necesaria" })
             }
