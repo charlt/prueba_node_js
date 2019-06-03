@@ -143,7 +143,7 @@ function editar(req, res) {
                 if (rol == "admin") {
                     update_query = `UPDATE usuario
                     SET nombre = '${nombre}', edad = '${edad}', email='${email}', avatar='${nombre_avatar}', passw='${passw}', rol='admin'
-                    WHERE username= ${username}'`
+                    WHERE username= '${username}'`
                 } else {
                     update_query = `UPDATE usuario
                     SET nombre = '${nombre}', edad = '${edad}', email='${email}', avatar='${nombre_avatar}', passw='${passw}', rol='normal'
