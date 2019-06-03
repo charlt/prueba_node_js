@@ -81,9 +81,9 @@ function getAllUsers(filtro, ordenamiento) {
             orden = ordenamiento
         }
         if (filtro != undefined && filtro != "") {
-            query_str = "SELECT * FROM USUARIO order by " + filtro + " " + orden;
+            query_str = "SELECT * FROM usuario order by " + filtro + " " + orden;
         } else {
-            query_str = "SELECT * FROM USUARIO ";
+            query_str = "SELECT * FROM usuario ";
         }
 
         pool.query(query_str, function(err, rows, fields) {
