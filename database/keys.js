@@ -2,10 +2,10 @@ module.exports = {
 
     database: {
         connectionLimit: 10,
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'usuario_test'
+        host: 'https://databases-auth.000webhost.com/',
+        user: 'id5737972_root1',
+        password: 'charly12#',
+        database: 'id5737972_usuario_test'
     }
 
 };
