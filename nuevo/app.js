@@ -10,23 +10,39 @@ var bodyParser = require("body-parser");
 const pool = require('./database/db');
 var app = express();
 var router = express.Router();
-
+var passport = require("passport");
+var passportJWT = require("passport-jwt");
+var fileUpload = require('express-fileupload')
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
+app.use(passport.initialize());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(fileUpload())
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
+
+function check_user(username) {
+    let check = new Promise(function(resolve, reject) {
+
+        pool.query('SELECT * FROM usuario WHERE username = ? ', [username], function(err, rows, fields) {
+            //Call reject on error states,
+            //call resolve with results
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+        });
+    });
+    return check
+}
 
 
 
@@ -34,14 +50,8 @@ app.use('/users', usersRouter);
 app.post('/login', (req, res) => { 
     var username = req.body.user 
     var password = req.body.password
-
-    //Se hace la consulta a la bd
-    /*
-    HACE FALTA LA OCNSULTA AL SERVIDOR
-    */
     let check = new Promise(function(resolve, reject) {
-
-        pool.query('SELECT * FROM usuario WHERE username = ? and passw= ?', [req.body.user, req.body.password], function(err, rows, fields) {
+        pool.query('SELECT * FROM usuario WHERE username = ? and passw= ?', [username, password], function(err, rows, fields) {
             //Call reject on error states,
             //call resolve with results
             if (err) {
@@ -59,9 +69,7 @@ app.post('/login', (req, res) => { 
             var token = jwt.sign(tokenData, 'SECRET', {    
                 expiresIn: 60 * 60 * .1 // expires in 24 hours
             }) 
-            res.status(200).send({   
-                token 
-            })
+            res.status(200).send({ message: "ok", token: token })
         } else {
             res.status(401).send({     
                 error: 'usuario o contraseña inválidos'   
@@ -69,7 +77,8 @@ app.post('/login', (req, res) => { 
             return 
         }   
     })
-})
+});
+
 
 // error handler
 app.use(function(err, req, res, next) {
