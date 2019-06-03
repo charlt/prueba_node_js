@@ -211,7 +211,7 @@ function verifica_token(req, res) {
 function findOneUser(username) {
     return new Promise(function(resolve, reject) {
 
-        query_str = `SELECT * FROM USUARIO where username='${username}'`;
+        query_str = `SELECT * FROM usuario where username='${username}'`;
         pool.query(query_str, function(err, rows, fields) {
             //Call reject on error states,
             //call resolve with results
