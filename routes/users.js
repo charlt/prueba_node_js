@@ -5,10 +5,11 @@ const jwt = require('jsonwebtoken');
 const fs = require('fs-extra');
 
 /**
+ * @description Función que crea un numero n de letras aleatorias
+ * @method
+ * @param {int} length  Numero de caracteres 
+ * @return {Array} cadena de caracteres random
  * 
- * @param {Numero de caracteres} length 
- * @return {cadena de caracteres random}
- * Función que crea un numero n de letras aleatorias
  */
 function makeid(length) {
     var result = '';
@@ -22,11 +23,11 @@ function makeid(length) {
 
 
 /**
+ * @description Función que se encarga de buscar un usuario dependiendo de cierto campo y cierto valor.
+ * @param {String} campo Campo de bd 
+ * @param {String} dato Valor de campo en bd a buscar
+ * @return {Array} Usuario encontrado
  * 
- * @param {Campo de bd} campo 
- * @param {Valor de campo en bd a buscar} dato
- * @return {Usuario encontrado}
- * Función que se encarga de buscar un usuario dependiendo de cierto campo y cierto valor.
  * 
  */
 function check_user(campo, dato) {
@@ -44,11 +45,11 @@ function check_user(campo, dato) {
 }
 
 /**
+ * @description La función se encarga de hacer toda la validación y por ultimo el query para el update.
+ * @param {Array} req Objeto que contiene informacion para edicion 
+ * @param {Array} res Respuesta a cliente 
  * 
- * @param {Objeto que contiene informacion para edicion} req 
- * @param {Respuesta a cliente} res 
  * 
- * La función se encarga de hacer toda la validación y por ultimo el query para el update.
  */
 function editar(req, res) {
     //Se verifica si existen las variables enviadas por el body
@@ -186,10 +187,10 @@ function verifica_token(req, res) {
     return verifica
 }
 /**
+ * @description Promesa que busca a registro por medio del username
+ * @param {String} username Es el dato clave para buscar el registro 
+ * @returns {Array } Usuario buscado
  * 
- * @param {Es el dato clave para buscar el registro} username 
- * @returns {Usuario buscado}
- * Promesa que busca a registro por medio del username
  * 
  */
 function findOneUser(username) {
@@ -207,11 +208,13 @@ function findOneUser(username) {
     });
 }
 /**
+ * @description Función que extrae todos los datos de la bd, y retorna dependiendo de los filtros
+ * @param {String} filtro Campo por el cual se quiere ordenar
+ * @param {String} ordenamiento tipo de ordenamiento ASC/DESC
+ * @param {int} min Filtro de minimo para crer el between
+ * @param {int} max Filtro de maximo para crer el between 
+ * @return {Array} Usuarios
  * 
- * @param {Campo por el cual se quiere ordenar} filtro 
- * @param {tipo de ordenamiento ASC/DESC} ordenamiento 
- * 
- * Función que extrae todos los datos de la bd, y retorna dependiendo de los filtros
  */
 function getAllUsers(filtro, ordenamiento, min, max) {
     return new Promise(function(resolve, reject) {
@@ -245,9 +248,9 @@ function getAllUsers(filtro, ordenamiento, min, max) {
 }
 
 
-/*
- *Función de agregar, valida campos, y reglas especificas, si todo sale bien, inserta a bd
- **/
+/**
+ *  @description Función de agregar, valida campos, y reglas especificas, si todo sale bien, inserta a bd
+ */
 router.post('/add', function(req, res, next) {
 
     verifica_token(req, res).then(user => {
@@ -279,6 +282,12 @@ router.post('/add', function(req, res, next) {
 
                     }
                 })
+
+                var noValido = /\s/
+                if (noValido.test(username)) {
+                    res.status(200).send({ "error": "El username no debe contener espacios" })
+
+                }
                 emailRegex = /^[-\w.%+]{1,64}@(?:[A-Z0-9-]{1,63}\.){1,125}[A-Z]{2,63}$/i;
 
                 if (!emailRegex.test(email)) {
@@ -292,7 +301,8 @@ router.post('/add', function(req, res, next) {
 
                     }
                 })
-                let regexp_password = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{10,60}/;
+                let regexp_password = /^(?=(?:.*(\d|[$@])){1})(?=(?:.*[A-Z]){1})(?=(?:.*[a-z]){1})\S{10,60}$/;
+
                 let vall_pass = regexp_password.test(passw);
 
                 if (!vall_pass) {
@@ -370,7 +380,9 @@ router.post('/add', function(req, res, next) {
 
 });
 
-/* Extrae a un usuario, por medio del username */
+/**
+ * @description Extrae a un usuario, por medio del username
+ */
 router.get('/:username', function(req, res, next) {
     verifica_token(req, res).then(user => {
         if (user) {
@@ -387,7 +399,9 @@ router.get('/:username', function(req, res, next) {
     })
 });
 
-/* Extrae a todos los usuarios con distintos filtros */
+/**
+ * @description Extrae a todos los usuarios con distintos filtros 
+ */
 router.get('/', function(req, res, next) {
 
     verifica_token(req, res).then(user => {
@@ -408,10 +422,11 @@ router.get('/', function(req, res, next) {
         }
     })
 });
-/* 
-    Elimina a usuario por medio del parametro de username
-    verificando si es administrador o es el mismo usuario quien quiere eliminarlo.
-*/
+
+/**
+ * @description Elimina a usuario por medio del parametro de username verificando si es administrador o es el mismo usuario quien quiere eliminarlo.
+ */
+
 router.delete('/:username', function(req, res, next) {
 
     verifica_token(req, res).then(user => {
@@ -464,9 +479,7 @@ router.delete('/:username', function(req, res, next) {
 
 
 /***
- * 
- * Función que se encarga de editar, recibe los datos y hacen las 
- * validaciones necesarias
+ * @description Función que se encarga de editar, recibe los datos y hacen las validaciones necesarias
  */
 router.put('/', function(req, res, next) {
     verifica_token(req, res).then(user => {

@@ -48,7 +48,7 @@ app.post('/login', (req, res) => { 
                     // Los datos de el usuario        
             }
             var token = jwt.sign(tokenData, 'SECRET', {    
-                expiresIn: 60 * 60 * 2 // expira en 8 hrs
+                expiresIn: 60 * 60 * 8000 // expira en 8 hrs
             }) 
             res.status(200).send({ message: "ok", token: token })
         } else {
