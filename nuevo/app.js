@@ -51,10 +51,12 @@ app.post('/login', (req, res) => { 
 
         if (row.length > 0) {  
             var tokenData = {   
-                username: row[0]['username'] // Los datos de el usuario        
+                username: row[0]['username'],
+                rol: row[0]['rol']
+                    // Los datos de el usuario        
             }
             var token = jwt.sign(tokenData, 'SECRET', {    
-                expiresIn: 60 * 60 * .1 // expira en 8 hrs
+                expiresIn: 60 * 60 * 2 // expira en 8 hrs
             }) 
             res.status(200).send({ message: "ok", token: token })
         } else {
