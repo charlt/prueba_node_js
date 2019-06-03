@@ -29,20 +29,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 
-function check_user(username) {
-    let check = new Promise(function(resolve, reject) {
 
-        pool.query('SELECT * FROM usuario WHERE username = ? ', [username], function(err, rows, fields) {
-            //Call reject on error states,
-            //call resolve with results
-            if (err) {
-                return reject(err);
-            }
-            resolve(rows);
-        });
-    });
-    return check
-}
 
 
 
@@ -52,8 +39,8 @@ app.post('/login', (req, res) => { 
     var password = req.body.password
     let check = new Promise(function(resolve, reject) {
         pool.query('SELECT * FROM usuario WHERE username = ? and passw= ?', [username, password], function(err, rows, fields) {
-            //Call reject on error states,
-            //call resolve with results
+            // reject para errores
+            // resolve se hizo bien la transaccion con resultados
             if (err) {
                 return reject(err);
             }
@@ -67,7 +54,7 @@ app.post('/login', (req, res) => { 
                 username: row[0]['username'] // Los datos de el usuario        
             }
             var token = jwt.sign(tokenData, 'SECRET', {    
-                expiresIn: 60 * 60 * .1 // expires in 24 hours
+                expiresIn: 60 * 60 * .1 // expira en 8 hrs
             }) 
             res.status(200).send({ message: "ok", token: token })
         } else {
