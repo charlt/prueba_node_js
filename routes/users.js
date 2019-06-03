@@ -130,31 +130,45 @@ function editar(req, res) {
                 .catch(err => console.error(err))
         }
 
-        let update_query = "";
-        if (rol == "admin") {
-            update_query = `UPDATE usuario
-            SET nombre = '${nombre}', edad = '${edad}', email='${email}', avatar='${nombre_avatar}', passw='${passw}', rol='admin'
-            WHERE username= ${username}'`
-        } else {
-            update_query = `UPDATE usuario
-            SET nombre = '${nombre}', edad = '${edad}', email='${email}', avatar='${nombre_avatar}', passw='${passw}', rol='normal'
-            WHERE username= '${username}'`
-        }
-        update = new Promise(function(resolve, reject) {
-            pool.query(update_query, function(err, rows, fields) {
-                // reject para errores
-                // resolve se hizo bien la transaccion con resultados
-                if (err) {
-                    return reject(err);
+
+
+
+        let BCRYPT_SALT_ROUNDS = 12;
+        bcrypt.hash(passw, BCRYPT_SALT_ROUNDS)
+            .then(function(hashedPassword) {
+                console.log(hashedPassword)
+                passw = hashedPassword;
+
+                let update_query = "";
+                if (rol == "admin") {
+                    update_query = `UPDATE usuario
+                    SET nombre = '${nombre}', edad = '${edad}', email='${email}', avatar='${nombre_avatar}', passw='${passw}', rol='admin'
+                    WHERE username= ${username}'`
+                } else {
+                    update_query = `UPDATE usuario
+                    SET nombre = '${nombre}', edad = '${edad}', email='${email}', avatar='${nombre_avatar}', passw='${passw}', rol='normal'
+                    WHERE username= '${username}'`
                 }
-                resolve(rows);
-            });
-        });
 
-        update.then(ok => {
-            res.status(200).send({ "ok": "El usuario se actualizo correctamente" })
+                update = new Promise(function(resolve, reject) {
+                    pool.query(update_query, function(err, rows, fields) {
+                        // reject para errores
+                        // resolve se hizo bien la transaccion con resultados
+                        if (err) {
+                            return reject(err);
+                        }
+                        resolve(rows);
+                    });
+                });
 
-        })
+
+
+                update.then(ok => {
+                    res.status(200).send({ "ok": "El usuario se actualizo correctamente" })
+
+                })
+            })
+
     } else {
         res.status(200).send({ "error": "Registre la información necesaria" })
     }
