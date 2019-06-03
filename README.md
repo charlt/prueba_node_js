@@ -35,7 +35,7 @@ Se enviar un json por medio del body con la siguiente estructura:
 	"password":"1234567890"
 }
 
-URL: POST -> http://localhost:3000/login
+URL: POST -> https://examen-node-js.herokuapp.com/login
 
 La aplicación retornara un mensaje, ya sea de exito o de fallo. Si es de exito, mostrará un json con la siguiente estructura
 
@@ -58,7 +58,7 @@ min -> Rango de edad minima a buscar
 max -> Rango de edad maxima a buscar
 Nota: Si solo se registra un min o max, se ignorara y se verificara los demas parametros.
 
-URL: GET -> http://localhost:3000/users/
+URL: GET -> https://examen-node-js.herokuapp.com/users/
 
 
 REGISTRO DE USUARIOS
@@ -75,7 +75,7 @@ rol -> No requerido (admin/normal)
 
 Se registran los datos y al final se hace las verificaciones necesarias.
 
-URL: POST-> http://localhost:3000/users/add
+URL: POST-> https://examen-node-js.herokuapp.com/users/add
 
 
 CONSULTA DE UN USUARIO
@@ -84,8 +84,8 @@ CONSULTA DE UN USUARIO
 
 params: username
 
-URL: GET -> http://localhost:3000/users/{username}
-example: http://localhost:3000/users/User
+URL: GET -> https://examen-node-js.herokuapp.com/users/{username}
+example: https://examen-node-js.herokuapp.com/users/User
 
 Si se encuentr, se retornara un json con los datos del usuario, excepto el pass.
 
@@ -104,7 +104,7 @@ passw-> Requerido
 rol -> No requerido (admin/normal)
 
 
-URL: PUT -> http://localhost:3000/users/
+URL: PUT -> https://examen-node-js.herokuapp.com/users/
 
 Principalmente se valida que el username exista.
 
@@ -116,8 +116,8 @@ ELIMINAR UN USUARIO:
 
 params: username
 
-URL: DELETE -> http://localhost:3000/users/{username}
-example: http://localhost:3000/users/user
+URL: DELETE -> https://examen-node-js.herokuapp.com/users/{username}
+example: https://examen-node-js.herokuapp.com/users/user
 
 
 Se veriufica que sea tippo admin o dueño del usuario para hacer esta transaccion
